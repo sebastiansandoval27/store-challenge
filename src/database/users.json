@@ -1,16 +1,1 @@
-[
-  {
-    "id": "1",
-    "name": "John Doe",
-    "email": "johnDoe@gmail.com",
-    "password": "123456",
-    "created_at": "202203505"
-  },
-  {
-    "id": "09cd5f45-a3e3-479c-a2f5-6c2b88c0b747",
-    "name": "Mario Casas",
-    "email": "marioCasas@gmail.com",
-    "password": "123456",
-    "created_at": "2023-04-16T02:26:14.343Z"
-  }
-]
+[{"id":"e6460b45-4e42-45d5-a9e6-010ec41178e1","name":"Mario Casas","email":"marioPruebsaCasas@gmail.com","password":"$2b$10$3/FXfy8og8wsmM5E5BrgKuKmkYauDdEJsmFcjJSnBDh3IL7TwMiFW","created_at":"2023-04-16T13:48:36.857Z"},{"id":"c6946779-f54b-4e0b-bfe7-7d3ec03fb0f8","name":"Mario Casas","email":"marioPruebsaCasas@gmail.com","password":"$2b$10$rfgfi2HnphMEI//k1zqTneUzmllXmxu1VyGsATddEfXfxnHCf6PUG","created_at":"2023-04-16T14:03:40.247Z"},{"id":"7783c633-de19-405d-907e-e2aac2bb4fce","name":"Mario Casas","email":"marioPruebsa","password":"$2b$10$adW2Vz.LUkfpy1ZKudQNoO0sFo9myk25EFQ4iyXRJQJkbdhQHnCam","created_at":"2023-04-16T14:04:43.573Z"},{"id":"161cb05a-d946-4db5-b656-6a0b16f5cd2b","name":"Mario Casas","email":"marioPrurCasas@gmail.com","password":"$2b$10$LOM5.DI/i1un0VZBwLVLn.YMUpOeao8zh.rdxJBf4NpXE/0N1P03O","created_at":"2023-04-16T14:23:29.521Z"},{"id":"30b43e77-37a8-44fe-8560-404cdfa509ef","name":"Raul Gasca","email":"raul@gmail.com","password":"$2b$10$jKpNQBPOT5y9rCzc8qD8I.OzBcdZBhqA21DDTJiFtry0ON1Pu6AXK","created_at":"2023-04-16T15:46:12.395Z"}]

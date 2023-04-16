@@ -1,52 +1,107 @@
-import fs from 'fs';
-import path from 'path';
-import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import { Request, Response } from 'express'
+import { v4 as uuidv4 } from 'uuid'
 
-import { User } from "@/models/User.model";
+import { User } from '@/models/User.model'
+import { hashPassword } from '@/utils/hashPassword'
+import { validateIsEmail } from '@/utils/validateEmail'
+import { readFileSync, writeFileSync } from '@/utils/writeFile'
+
+const PATH_ROUTE = '../database/users.json'
 
 export class UserController {
+  constructor() {
+    this.getUsers = this.getUsers.bind(this)
+    this.getUserByEmail = this.getUserByEmail.bind(this)
+    this.createUser = this.createUser.bind(this)
+  }
 
   async getUsers(req: Request, res: Response) {
     try {
-      let users: User[] = [];
+      let users: User[] = []
 
-      const data = fs.readFileSync(path.join(__dirname, '../database/users.json'), 'utf8');
+      const data = await readFileSync(PATH_ROUTE)
 
       if (!data) {
-        res.status(404).json({ error: 'Users not found' });
+        res.status(404).json({ error: 'Users not found' })
       }
-      users = JSON.parse(data);
-      res.json(users);
+      const fileData = data?.data
+      users = fileData
+      res.json(users)
     } catch (err: Error | any) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message })
+    }
+  }
+
+  async getUserByEmail(email: string) {
+    try {
+      if (!email) {
+        return false
+      }
+
+      if (!validateIsEmail(email)) {
+        return false
+      }
+
+      const data = await readFileSync(PATH_ROUTE)
+      if (!data?.file) {
+        return false
+      }
+
+      const users: User[] = data?.data
+      const user = users.find((user: User) => user.email === email)
+
+      if (!user) {
+        return false
+      }
+
+      return user
+    } catch (err: Error | any) {
+      return false
     }
   }
 
   async createUser(req: Request, res: Response) {
     try {
-      const { name, email, password } = req.body;
-      if (!name || !email || !password) {
-        res.status(400).json({ error: 'Invalid data' });
-      }
-      const user: User = { id: uuidv4(), name, email, password, created_at: new Date() };
+      const { name, email, password } = req.body
 
-      const file = fs.readFileSync(path.join(__dirname, '../database/users.json'), 'utf8');
+      if (!name || !email || !password) {
+        return res.status(400).json({ error: 'Invalid data' })
+      }
+
+      if (password.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters' })
+      }
+
+      if (!validateIsEmail(email)) {
+        return res.status(400).json({ error: 'Invalid email' })
+      }
+
+      const userExists = await this.getUserByEmail(email)
+      if (userExists) {
+        return res.status(400).json({ error: 'Email already exists' })
+      }
+
+      const passwordHash = hashPassword(password)
+
+      const user: User = { id: uuidv4(), name, email, password: passwordHash, created_at: new Date() }
+
+      let file = await readFileSync(PATH_ROUTE)
+
+      file = file
 
       if (!file) {
-        fs.writeFileSync(path.join(__dirname, '../database/users.json'), JSON.stringify([user]));
-        res.status(201).json(user);
+        await writeFileSync(PATH_ROUTE, [user])
+        return res.status(201).json(user)
       } else {
-        const users: User[] = JSON.parse(file);
-        users.push(user);
-        fs.writeFileSync(path.join(__dirname, '../database/users.json'), JSON.stringify(users));
-        res.status(201).json(user);
+        const users: User[] = JSON.parse(file.file)
+        if (users) {
+          users.push(user)
+        }
+        writeFileSync(PATH_ROUTE, users)
+        return res.status(201).json(user)
       }
-
-      res.json(user);
-
     } catch (err: Error | any) {
-      res.status(500).json({ error: err.message });
+      return res.status(500).json({ error: err.message })
     }
   }
 }

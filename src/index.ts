@@ -3,9 +3,8 @@ import bodyParser from 'body-parser'
 import * as dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
-import { errorHandler } from '@/middlewares/error.middleware';
-import { notFoundHandler } from '@/middlewares/notFound.middleware';
 import userRouter from '@/routers/user.router';
+import productRouter from './routers/product.router';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -27,15 +26,12 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// Middlewares
-/* app.use(errorHandler)
-app.use(notFoundHandler) */
-
 // Routes
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 app.use('/users', userRouter)
+app.use('/products', productRouter)
 
 app.listen(PORT || 3000, async () => {
   console.log(`Server is running at http://localhost:${PORT || 3000}`)
