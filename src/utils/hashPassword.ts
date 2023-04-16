@@ -6,3 +6,15 @@ export const hashPassword = (password: string): string => {
 
   return hash
 }
+
+import { promisify } from 'util'
+
+export const comparePassword = async (password: string, hash: string): Promise<boolean> => {
+  const compare = promisify(bcrypt.compare)
+  try {
+    const result = await compare(password, hash)
+    return result
+  } catch (err) {
+    return false
+  }
+}

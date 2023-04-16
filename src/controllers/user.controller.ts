@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 
 import { User } from '@/models/User.model'
-import { hashPassword } from '@/utils/hashPassword'
+import { comparePassword, hashPassword } from '@/utils/hashPassword'
 import { validateIsEmail } from '@/utils/validateEmail'
 import { readFileSync, writeFileSync } from '@/utils/writeFile'
 
@@ -13,6 +13,7 @@ export class UserController {
     this.getUsers = this.getUsers.bind(this)
     this.getUserByEmail = this.getUserByEmail.bind(this)
     this.createUser = this.createUser.bind(this)
+    this.login = this.login.bind(this)
   }
 
   async getUsers(req: Request, res: Response) {
@@ -26,6 +27,11 @@ export class UserController {
       }
       const fileData = data?.data
       users = fileData
+      // Deleete password
+      users = users.map((user: User) => {
+        delete user.password
+        return user
+      })
       res.json(users)
     } catch (err: Error | any) {
       res.status(500).json({ error: err.message })
@@ -53,7 +59,6 @@ export class UserController {
       if (!user) {
         return false
       }
-
       return user
     } catch (err: Error | any) {
       return false
@@ -98,7 +103,42 @@ export class UserController {
           users.push(user)
         }
         writeFileSync(PATH_ROUTE, users)
+        delete user.password
         return res.status(201).json(user)
+      }
+    } catch (err: Error | any) {
+      return res.status(500).json({ error: err.message })
+    }
+  }
+
+  async login(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body
+
+      if (!email || !password) {
+        return res.status(400).json({ error: 'Invalid data' })
+      }
+
+      const user = await this.getUserByEmail(email)
+
+
+
+      if (!user) {
+        return res.status(400).json({ error: 'Invalid Credentials' })
+      }
+
+      if (user.password) {
+        const comparePasswords = await comparePassword(password, user.password)
+
+
+        if (comparePasswords) {
+          delete user.password
+          return res.json(user)
+        } else {
+          return res.status(400).json({ error: 'Invalid Credentials' })
+        }
+      } else {
+        return res.status(400).json({ error: 'Invalid Credentials' })
       }
     } catch (err: Error | any) {
       return res.status(500).json({ error: err.message })
