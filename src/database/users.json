@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "email": "johnDoe@gmail.com",
+    "password": "123456",
+    "created_at": "202203505"
+  },
+  {
+    "id": "09cd5f45-a3e3-479c-a2f5-6c2b88c0b747",
+    "name": "Mario Casas",
+    "email": "marioCasas@gmail.com",
+    "password": "123456",
+    "created_at": "2023-04-16T02:26:14.343Z"
+  }
+]
