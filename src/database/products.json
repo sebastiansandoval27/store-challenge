@@ -1,0 +1,65 @@
+[
+  {
+    "id": "98c7ebec-e347-4c4e-8eef-99bb19a29743",
+    "name": "Shirt 1",
+    "price": 25,
+    "description": "Shirt 1",
+    "image": "http://via.placeholder.com/640x360",
+    "createdAt": "2023-04-17T00:22:54.049Z",
+    "category": "Marvel"
+  },
+  {
+    "id": "501699ab-8306-43de-837c-d1fadbf46008",
+    "name": "Shirt 2",
+    "price": 25,
+    "description": "Shirt 2",
+    "image": "http://via.placeholder.com/640x360",
+    "createdAt": "2023-04-17T00:23:01.441Z",
+    "category": "DC"
+  },
+  {
+    "id": "5491510b-cdfc-4126-9a81-c93e6cd9e3cb",
+    "name": "Shirt 3",
+    "price": 25,
+    "description": "Shirt 3",
+    "image": "http://via.placeholder.com/640x360",
+    "createdAt": "2023-04-17T00:23:12.440Z",
+    "category": "Marvel"
+  },
+  {
+    "id": "8a3c482b-cfb5-49f2-b639-1d92f76ee248",
+    "name": "Shirt 4",
+    "price": 25,
+    "description": "Shirt 4",
+    "image": "http://via.placeholder.com/640x360",
+    "createdAt": "2023-04-17T00:23:20.655Z",
+    "category": "Marvel"
+  },
+  {
+    "id": "501699ab-8306-43de-837c-d1fadbf46008",
+    "name": "Shirt 2",
+    "price": 25,
+    "description": "Shirt 2",
+    "image": "http://via.placeholder.com/640x360",
+    "createdAt": "2023-04-17T00:23:01.441Z",
+    "category": "DC"
+  },
+  {
+    "id": "5491510b-cdfc-4126-9a81-c93e6cd9e3cb",
+    "name": "Shirt 3",
+    "price": 25,
+    "description": "Shirt 3",
+    "image": "http://via.placeholder.com/640x360",
+    "createdAt": "2023-04-17T00:23:12.440Z",
+    "category": "Other"
+  },
+  {
+    "id": "8a3c482b-cfb5-49f2-b639-1d92f76ee248",
+    "name": "Shirt 4",
+    "price": 25,
+    "description": "Shirt 4",
+    "image": "http://via.placeholder.com/640x360",
+    "createdAt": "2023-04-17T00:23:20.655Z",
+    "category": "Other"
+  }
+]

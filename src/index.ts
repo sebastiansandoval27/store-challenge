@@ -5,6 +5,7 @@ import cors from "cors";
 import helmet from "helmet";
 import userRouter from '@/routers/user.router';
 import productRouter from './routers/product.router';
+import categoryRouter from './routers/category.router';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -32,6 +33,8 @@ app.get('/', (req, res) => {
 })
 app.use('/users', userRouter)
 app.use('/products', productRouter)
+app.use('/categories', categoryRouter)
+
 
 app.listen(PORT || 3000, async () => {
   console.log(`Server is running at http://localhost:${PORT || 3000}`)

@@ -35,6 +35,35 @@ export class ProductController {
     }
   }
 
+  async getProductsByCategory(req: Request, res: Response) {
+    try {
+      const { category } = req.params
+
+      if (!category) {
+        return res.status(400).json({ error: 'Category is required' })
+      }
+
+      const data = await readFileSync(PRODUCTS_PATH_ROUTE)
+      if (!data?.file) {
+        return res.status(404).json({ error: 'Products not found' })
+      }
+
+      const products: Product[] = data?.data
+
+      if (category.toLowerCase() === 'all') return res.json(products)
+
+      const productsByCategory = products.filter((product: Product) => product.category === category)
+
+      if (!productsByCategory) {
+        return res.status(404).json({ error: 'Products not found' })
+      }
+
+      return res.json(productsByCategory)
+    } catch (err: Error | any) {
+      return res.status(500).json({ error: err.message })
+    }
+  }
+
   async getProductById(req: Request, res: Response) {
     try {
       const { id } = req.params
@@ -63,7 +92,7 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response) {
     try {
-      const { name, price, description, image, quantity } = req.body
+      const { name, price, description, image, quantity, category } = req.body
 
       if (!name || !price || !description || !image || !quantity) {
         return res.status(400).json({ error: 'Missing fields' })
@@ -90,6 +119,7 @@ export class ProductController {
         description,
         image,
         createdAt: new Date(),
+        category,
       }
 
       products.push(product)
@@ -133,7 +163,7 @@ export class ProductController {
   async updateProduct(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const { name, price, description, image } = req.body
+      const { name, price, description, image, category } = req.body
 
       if (!id) {
         return res.status(400).json({ error: 'Id is required' })
@@ -157,6 +187,7 @@ export class ProductController {
         product.price = price
         product.description = description
         product.image = image
+        product.category = category
       }
 
       const write = await writeFileSync(PRODUCTS_PATH_ROUTE, products)
@@ -267,6 +298,82 @@ export class ProductController {
       } else {
         return res.status(404).json({ error: 'Product not found' })
       }
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message })
+    }
+  }
+
+  async sellProducts(req: Request, res: Response) {
+    try {
+      const { products, userId } = req.body
+
+      if (!products || !userId) {
+        return res.status(400).json({ error: 'Missing fields' })
+      }
+
+      const data = await readFileSync(STOCK_PATH_ROUTE)
+
+      if (!data?.file) {
+        return res.status(404).json({ error: 'Stock not found' })
+      }
+
+      const stock: Stock[] = data?.data
+
+      const productsNotFound: string[] = []
+      const productsNotAvailable: string[] = []
+      const sales: SaleModel[] = []
+
+      for (const { id, quantity } of products) {
+        const product = stock.find((stock: Stock) => stock.productId === id)
+
+        if (!product) {
+          productsNotFound.push(id)
+        } else if (product.quantity < quantity) {
+          productsNotAvailable.push(id)
+        } else {
+          // update quantity
+          product.quantity = product.quantity - quantity
+
+          const write = await writeFileSync(STOCK_PATH_ROUTE, stock)
+
+          if (!write) {
+            return res.status(500).json({ error: 'Error to sell product' })
+          }
+
+          // create sale
+          const sale: SaleModel = {
+            id: uuidv4(),
+            productId: id,
+            quantity,
+            userId,
+            createdAt: new Date(),
+          }
+
+          sales.push(sale)
+        }
+      }
+
+      if (productsNotFound.length > 0) {
+        return res.status(404).json({ error: `Products not found: ${productsNotFound.join(', ')}` })
+      }
+
+      if (productsNotAvailable.length > 0) {
+        return res
+          .status(400)
+          .json({ error: `Quantity not available for products: ${productsNotAvailable.join(', ')}` })
+      }
+
+      const dataSale = await readFileSync(SALES_PATH_ROUTE)
+
+      if (!dataSale?.file) {
+        await writeFileSync(SALES_PATH_ROUTE, sales)
+      } else {
+        const existingSales: SaleModel[] = dataSale?.data
+        const updatedSales: SaleModel[] = [...existingSales, ...sales]
+        await writeFileSync(SALES_PATH_ROUTE, updatedSales)
+      }
+
+      return res.json(sales)
     } catch (error: any) {
       return res.status(500).json({ error: error.message })
     }

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "Marvel",
+    "name": "Marvel"
+  },
+  {
+    "id": "DC",
+    "name": "DC"
+  },
+  {
+    "id": "Other",
+    "name": "Other"
+  }
+]
